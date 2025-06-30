@@ -1,70 +1,101 @@
-# Getting Started with Create React App
+# Test Run Viewer
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A React application for viewing and managing Azure DevOps test runs and their results.
 
-## Available Scripts
+## Features
 
-In the project directory, you can run:
+- **Test Run List**: View all test runs in your Azure DevOps project with filtering capabilities
+- **Test Run Details**: View individual test cases within a test run with the ability to update outcomes
+- **Real-time Updates**: Update test case outcomes directly in the interface
+- **Filtering**: Filter test runs by state, build number, and name
+- **Responsive Design**: Modern UI built with Material-UI components
 
-### `npm start`
+## Setup
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+1. **Install Dependencies**
+   ```bash
+   npm install
+   ```
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+2. **Configure Environment Variables (Optional)**
+   - Create a `.env` file in the root directory with your Azure DevOps settings:
+   ```bash
+   # Azure DevOps Configuration
+   VITE_PAT=your_personal_access_token_here
+   VITE_ORGANIZATION=your_organization_name_here
+   VITE_PROJECT=your_project_name_here
+   VITE_API_VERSION=7.1
+   ```
+   - If you don't set environment variables, you can enter them through the UI
+   - **Note**: Organization and Project are now required like the PAT - no default values are provided
 
-### `npm test`
+3. **Start the Development Server**
+   ```bash
+   npm run dev
+   ```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+4. **Authentication and Configuration**
+   - If no environment variables are set, you'll be prompted to enter all required information in a single form:
+     - Personal Access Token (PAT) - Required for API access
+     - Organization name - Your Azure DevOps organization
+     - Project name - Your Azure DevOps project
+   - All values are stored only in memory for the current session
+   - Make sure your PAT has the necessary permissions to read test runs and test results
 
-### `npm run build`
+## Usage
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Viewing All Test Runs
+1. After entering your PAT, you'll see a list of all test runs in your project
+2. Use the filters at the top to search by name, filter by state, or filter by build number
+3. Click the "View" button on any test run to see its details
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### Viewing Test Run Details
+1. From the test run list, click "View" on any test run
+2. You'll see all test cases in that test run with their current outcomes
+3. Click on the "Outcome" column to edit test case results
+4. Use the "Back to Test Runs" button to return to the list
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### Updating Test Case Outcomes
+1. In the test run details view, click on any "Outcome" cell
+2. Select the new outcome from the dropdown
+3. The change will be automatically saved to Azure DevOps
 
-### `npm run eject`
+## API Permissions Required
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+Your Azure DevOps Personal Access Token needs the following permissions:
+- Test Management (Read & Write)
+- Test Results (Read & Write)
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## Development
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+The application is built with:
+- React 19
+- TypeScript
+- Material-UI (MUI)
+- TanStack Query for data fetching
+- Vite for build tooling
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+### Project Structure
+```
+src/
+├── components/
+│   ├── TestRunList.tsx       # Main test run list view
+│   ├── TestRunDetails.tsx    # Individual test run details
+│   ├── TestCaseList.tsx      # Test cases list view
+│   ├── PATInput.tsx          # PAT input component (legacy)
+│   ├── ConfigInput.tsx       # Organization/Project input component (legacy)
+│   └── CombinedInput.tsx     # Combined PAT, Organization, Project input
+├── hooks/
+│   ├── useTestPlanApi.ts      # API hooks for test cases
+│   └── useTestRunQueryApi.ts  # API hooks for test runs
+└── utils/
+    ├── auth.ts               # Authentication utilities
+    └── config.ts             # Configuration utilities
+```
 
-## Learn More
+## Troubleshooting
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+- **No test runs appear**: Check that your PAT has the correct permissions and that your organization/project settings are correct
+- **Cannot update test results**: Ensure your PAT has write permissions for test management
+- **API errors**: Verify your Azure DevOps organization and project names are correct
+- **Configuration errors**: Ensure all required fields (PAT, Organization, Project) are provided either via environment variables or UI input
